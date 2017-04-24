@@ -257,11 +257,14 @@ tecAdminControllers.directive('executionProgress', ['$http','$timeout','$interva
             icon: '' },
           };
       
+      $scope.showDetails = function(id) {
+        $scope.selectedTab=1;
+      }
       
       $scope.stepsTable = {};
       $scope.stepsTable.columns = function(columns) {
         _.each(_.where(columns,{'title':'ID'}),function(col){col.visible=false});
-        _.each(_.where(columns,{'title':'Begin'}),function(col){col.sClass = 'rowDetailsToggle';col.width="80px"});
+        _.each(_.where(columns,{'title':'Begin'}),function(col){col.width="80px"});
         _.each(_.where(columns,{'title':'Step'}),function(col){
           //col.width="50%";
           col.sClass = 'rowDetailsToggle';
@@ -272,7 +275,11 @@ tecAdminControllers.directive('executionProgress', ['$http','$timeout','$interva
               renderer = reportNodeRenderer['default'];
             }
             //return JSON.stringify(data)
-            return renderer.renderer(reportNode);
+            var detailsHtml = renderer.renderer(reportNode);
+            detailsHtml += '<button type="button" class="btn btn-default" aria-label="Left Align" ng-click="showDetails(\''+row[0]+'\')">' +
+            '<span class="glyphicon glyphicon glyphicon glyphicon-play" aria-hidden="true"></span>' +
+            '</button> '
+            return detailsHtml;
             };
         });
         _.each(_.where(columns,{'title':'Error'}),function(col){
@@ -329,33 +336,6 @@ tecAdminControllers.directive('executionProgress', ['$http','$timeout','$interva
         
         return filter;
       };
-      
-      $scope.stepsTable.detailRowRenderer = function(rowData, callback) {
-        $http.get('rest/controller/reportnode/'+rowData[0]+'/path').then(function(response) {
-          var data = response.data;
-          var currentNode = _.last(data);
-          var html = '<ul class="list-unstyled node-details">';
-          if(currentNode.reportNode && currentNode.reportNode.agentUrl) {html+='<li><strong>Agent</strong> <span>'+currentNode.reportNode.agentUrl+'</span></li>'}
-          if(currentNode.reportNode && currentNode.reportNode.tokenId) {html+='<li><strong>Token ID</strong> <span>'+currentNode.reportNode.tokenId+'</span></li>'}
-
-          if(currentNode.reportNode){html+='<li><strong>Duration (ms)</strong> <span>'+currentNode.reportNode.duration+'</span></li>'}
-          html+='<li><strong>Stacktrace</strong><div><table class="stacktrace">';
-          _.each(data.slice(2), function(entry){
-            var node = entry.reportNode;
-            var artefact = entry.artefact; 
-            html+='<tr><td>'+(artefact?_.last(artefact._class.split('.')):'')+'</td><td>'+node.name+'</td><td>';
-            var artefactInstance = node.artefactInstance?node.artefactInstance:artefact; 
-            
-            _.mapObject(artefactInstance, function(value,key){
-              if(['_class','id','_id','name','childrenIDs','customAttributes','attachments','createSkeleton','input','output','expectedOutput'].indexOf(key)==-1) {
-                if(value) {html+=key+'='+value+' '}
-              }})
-            html+='</td></tr>'
-          })
-          html+='</table></div></li></ul>'
-          callback(html);
-        })
-      }
       
       var operationRenderer = {
           'Keyword Call' : {

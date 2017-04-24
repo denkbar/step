@@ -33,6 +33,8 @@ angular.module('reportTree',['step'])
       
       var treeDiv = angular.element($element[0]).find('#jstree_div');
       
+      var pagingModel = {};
+      
       var tree;
       treeDiv.jstree(
           {
@@ -42,6 +44,12 @@ angular.module('reportTree',['step'])
             },
             'data' : function (obj, cb) {
               var id = obj.id==='#'?nodeid:obj.id;
+              
+              var modelEntry = pagingModel[id];
+              if(modelEntry) {
+                
+              }
+              
               $http.get("rest/controller/reportnode/"+id+"/children").then(function(response) {
                 var nodes = response.data;
                var children=_.map(nodes,function(node){
@@ -79,6 +87,12 @@ angular.module('reportTree',['step'])
       
       $scope.handle.refresh = function() {
         tree.refresh();
+      }
+      
+      $scope.handle.scrollTo = function(nodeId) {
+        $http.get("rest/controller/reportnode/"+selectedNodeId+"/path").then(function(response){
+          var path = response.data;
+        })
       }
     },
     templateUrl: 'partials/reportTree.html'}

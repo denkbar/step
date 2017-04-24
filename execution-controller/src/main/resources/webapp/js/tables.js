@@ -265,6 +265,10 @@ angular.module('dataTable', [])
           scope.refreshInputs();
       };
       
+      tableOptions.fnCreatedRow = function(nRow, aData, iDataIndex) {
+        nRow = $compile(nRow)(scope.$parent)   
+      }
+      
       if(attr.order) {
         tableOptions.order = JSON.parse(attr.order);
       }
