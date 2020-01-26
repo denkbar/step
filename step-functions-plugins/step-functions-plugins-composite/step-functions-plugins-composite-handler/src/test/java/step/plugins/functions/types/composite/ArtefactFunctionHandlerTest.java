@@ -40,7 +40,7 @@ public class ArtefactFunctionHandlerTest {
 		r.setOutput(new DynamicValue<String>("{\"Result\":{\"dynamic\":true,\"expression\":\"input.Input1\"}}"));
 		
 		Plan compositePlan = PlanBuilder.create().startBlock(BaseArtefacts.sequence()).add(r).endBlock().build();
-		PlanRepository planRepository = new LocalPlanRepository(context.getArtefactAccessor());
+		PlanRepository planRepository = new LocalPlanRepository(context.getPlanAccessor());
 		planRepository.save(compositePlan);
 		
 		ReportNode parentNode = new ReportNode();
@@ -82,7 +82,7 @@ public class ArtefactFunctionHandlerTest {
 		script.setScript("output.setError('MyError'");
 		
 		Plan compositePlan = PlanBuilder.create().startBlock(BaseArtefacts.sequence()).add(script).endBlock().build();
-		PlanRepository planRepository = new LocalPlanRepository(context.getArtefactAccessor());
+		PlanRepository planRepository = new LocalPlanRepository(context.getPlanAccessor());
 		planRepository.save(compositePlan);
 		
 		ReportNode parentNode = new ReportNode();
@@ -101,7 +101,7 @@ public class ArtefactFunctionHandlerTest {
 
 	private Map<String, String> getInputProperties(Plan compositePlan, ReportNode parentNode) {
 		Map<String, String> properties = new HashMap<>();
-		properties.put(ArtefactFunctionHandler.ARTEFACTID_KEY, compositePlan.getRoot().getId().toString());
+		properties.put(ArtefactFunctionHandler.PLANID_KEY, compositePlan.getRoot().getId().toString());
 		properties.put(AbstractFunctionHandler.PARENTREPORTID_KEY, parentNode.getId().toString());
 		return properties;
 	}

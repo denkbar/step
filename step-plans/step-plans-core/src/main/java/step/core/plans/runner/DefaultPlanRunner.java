@@ -21,7 +21,6 @@ public class DefaultPlanRunner implements PlanRunner {
 	@Override
 	public PlanRunnerResult run(Plan plan) {
 		ExecutionContext context = buildExecutionContext();
-		context.getArtefactAccessor().save(new ArrayList<>(plan.getArtefacts()));
 		if(plan.getFunctions()!=null) {
 			FunctionAccessor functionAccessor = context.get(FunctionAccessor.class);
 			if(functionAccessor!=null && functionAccessor instanceof FunctionCRUDAccessor) {

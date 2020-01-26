@@ -13,13 +13,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import step.core.accessors.AbstractOrganizableObject;
-import step.core.artefacts.ArtefactAccessor;
 import step.core.deployment.AbstractServices;
 import step.core.deployment.Secured;
 import step.core.deployment.Session;
 import step.core.export.ExportTaskManager.ExportRunnable;
 import step.core.export.ExportTaskManager.ExportStatus;
 import step.core.objectenricher.ObjectHookRegistry;
+import step.core.plans.PlanAccessor;
 import step.resources.Resource;
 import step.resources.ResourceManager;
 import step.resources.ResourceRevisionContainer;
@@ -34,12 +34,12 @@ public class ExportServices extends AbstractServices {
 	
 	ObjectHookRegistry objectHookRegistry;
 	
-	ArtefactAccessor accessor;
+	PlanAccessor accessor;
 	
 	@PostConstruct
 	public void init() throws Exception {
 		super.init();
-		accessor = getContext().getArtefactAccessor();
+		accessor = getContext().getPlanAccessor();
 		exportTaskManager = getContext().get(ExportTaskManager.class);
 		objectHookRegistry = getContext().get(ObjectHookRegistry.class);
 		exportManager = new ExportManager(accessor);
@@ -54,9 +54,9 @@ public class ExportServices extends AbstractServices {
 		return exportTaskManager.createExportTask(new ExportRunnable() {
 			@Override
 			public Resource runExport() throws IOException {
-				String artefactName = accessor.get(id).getAttributes().get(AbstractOrganizableObject.NAME);
-				ResourceRevisionContainer resourceContainer = getResourceManager().createResourceContainer(ResourceManager.RESOURCE_TYPE_TEMP, artefactName + ".json");
-				exportManager.exportArtefactWithChildren(id, resourceContainer.getOutputStream());
+				String planName = accessor.get(id).getAttributes().get(AbstractOrganizableObject.NAME);
+				ResourceRevisionContainer resourceContainer = getResourceManager().createResourceContainer(ResourceManager.RESOURCE_TYPE_TEMP, planName + ".json");
+				exportManager.exportPlan(id, resourceContainer.getOutputStream());
 				resourceContainer.save(null);
 				return resourceContainer.getResource();
 			}
