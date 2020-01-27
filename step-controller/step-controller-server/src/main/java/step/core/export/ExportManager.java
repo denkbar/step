@@ -33,7 +33,7 @@ public class ExportManager {
 	public void exportPlan(String planId, OutputStream outputStream) throws FileNotFoundException, IOException {
 		ObjectMapper mapper = getMapper();	
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(outputStream))) {
-			exportplan(mapper, writer, new ObjectId(planId));
+			exportPlan(mapper, writer, new ObjectId(planId));
 		} catch(Exception e) {
 			logger.error("Error while exporting artefact with id "+planId,e);
 		}
@@ -45,13 +45,13 @@ public class ExportManager {
 		return mapper;
 	}
 	
-	public void exportAllArtefacts(OutputStream outputStream, ObjectFilter objectFilter) throws FileNotFoundException, IOException {
+	public void exportAllPlans(OutputStream outputStream, ObjectFilter objectFilter) throws FileNotFoundException, IOException {
 		ObjectMapper mapper = getMapper();
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(outputStream))) {
 			accessor.getAll().forEachRemaining((a)->{
 				if(objectFilter.test(a)) {
 					try {
-						exportplan(mapper, writer, new ObjectId(a.getId().toString()));
+						exportPlan(mapper, writer, new ObjectId(a.getId().toString()));
 					} catch (Exception e) {
 						logger.error("Error while exporting artfact "+a.getId().toString(), e);
 					}
@@ -61,7 +61,7 @@ public class ExportManager {
 
 	}
 
-	private void exportplan(ObjectMapper mapper, Writer writer, ObjectId id) throws IOException {
+	private void exportPlan(ObjectMapper mapper, Writer writer, ObjectId id) throws IOException {
 		Plan plan = accessor.get(id);
 		mapper.writeValue(writer, plan);
 		writer.write("\n");

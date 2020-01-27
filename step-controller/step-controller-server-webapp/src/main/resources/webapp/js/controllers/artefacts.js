@@ -123,32 +123,25 @@ angular.module('artefacts',['step'])
     },
     templateUrl: 'partials/artefacts/abstractArtefact.html'}
 })
-.controller('CallPlanCtrl' , function($scope,$uibModal,$location,$http) {  
-  $scope.gotoArtefact = function() {
-    $location.path('/root/artefacteditor/' + $scope.artefact.artefactId);
+.controller('CallPlanCtrl' , function($scope,$location,$http, PlanDialogs) {  
+  $scope.gotoPlan = function() {
+    $location.path('/root/planeditor/' + $scope.artefact.planId);
   }
   
-  $scope.$watch('artefact.artefactId', function(artefactId) {
-    if(artefactId) {
-      $http({url:"rest/controller/artefact/"+artefactId,method:"GET"}).then(function(response) {
-        $scope.artefactName = response.data.attributes.name;
+  $scope.$watch('artefact.planId', function(planId) {
+    if(planId) {
+      $http.get('rest/plans/'+planId).then(function(response) {
+        $scope.planName = response.data.attributes.name;
       })
     }
   })
   
-  $scope.selectArtefact = function() {
-    var modalInstance = $uibModal.open({
-      backdrop: 'static',
-      templateUrl: 'partials/selectArtefact.html',
-      controller: 'selectArtefactModalCtrl',
-      resolve: {}
-    });
-
-    modalInstance.result.then(function (artefact) {
-      $scope.artefact.artefactId = artefact.id;
-      $scope.artefact.attributes.name = artefact.attributes.name;
+  $scope.selectPlan = function() {
+    PlanDialogs.selectPlan(function(plan) {
+      $scope.artefact.planId = plan.id;
+      $scope.artefact.attributes.name = plan.attributes.name;
       $scope.save();
-    });
+    })
   }
 })
 .controller('CallFunctionCtrl' , function($scope,$uibModal,$location,$http,FunctionDialogs) {

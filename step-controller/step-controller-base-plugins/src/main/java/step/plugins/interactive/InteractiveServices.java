@@ -53,7 +53,6 @@ import step.core.deployment.Secured;
 import step.core.execution.ControllerExecutionContextBuilder;
 import step.core.execution.ExecutionContext;
 import step.core.objectenricher.ObjectHookRegistry;
-import step.core.plans.LocalPlanRepository;
 import step.core.plans.Plan;
 import step.core.plans.PlanNavigator;
 import step.core.plans.builder.PlanBuilder;
@@ -276,8 +275,7 @@ public class InteractiveServices extends AbstractServices {
 				.add(callFunction)
 				.endBlock()
 				.build();
-		LocalPlanRepository repo = new LocalPlanRepository(getContext().getPlanAccessor());
-		repo.save(plan);
+		getContext().getPlanAccessor().save(plan);
 		FunctionTestingSession result = new FunctionTestingSession();
 		result.setPlanId(plan.getId().toString());
 		result.setCallFunctionId(callFunction.getId().toString());

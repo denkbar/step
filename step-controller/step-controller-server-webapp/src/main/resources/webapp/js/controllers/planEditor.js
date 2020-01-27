@@ -370,11 +370,13 @@ angular.module('planEditor',['dataTable','step','artefacts','reportTable','dynam
           return artefact;
         } else {
           var children = artefact.children;
-          for(var i=0; i<children.length; i++) {
-            var child = children[i];
-            var result = getArtefactById(child, id);
-            if(result != null) {
-              return result;
+          if(children) {
+            for(var i=0; i<children.length; i++) {
+              var child = children[i];
+              var result = getArtefactById(child, id);
+              if(result != null) {
+                return result;
+              }
             }
           }
           return null;
@@ -538,48 +540,48 @@ angular.module('planEditor',['dataTable','step','artefacts','reportTable','dynam
       	  var function_ = response.data;
           var remote = !(function_.type=="step.plugins.functions.types.CompositeFunction");
   
-          var newArtefact = {
-            "attributes":{name:function_.attributes.name},
-            "functionId":function_.id,"remote":{"value":remote},
-            "_class":"CallKeyword"
-           };
-  
-          if(AuthService.getConf().miscParams.enforceschemas === 'true'){
-            var targetObject = {};
-  
-            if(function_.schema && function_.schema.required){
-              _.each(Object.keys(function_.schema.properties), function(prop) {
-                var value = "notype";
-                if(function_.schema.properties[prop].type){
-                  var propValue = {};
-                  value = function_.schema.properties[prop].type;
-                  if(value === 'number' || value === 'integer')
-                    propValue = {"expression" : "<" + value + ">", "dynamic" : true};
-                  else
-                    propValue = {"value" : "<" + value + ">", "dynamic" : false};
-                  
-                  targetObject[prop] = propValue;
+          $http.get("rest/controller/artefact/types/CallKeyword").then(function(response) {
+            var newArtefact = response.data;
+            newArtefact.attributes.name=function_.attributes.name;
+            newArtefact.functionId=function_.id;
+            
+            if(AuthService.getConf().miscParams.enforceschemas === 'true'){
+              var targetObject = {};
+              
+              if(function_.schema && function_.schema.required){
+                _.each(Object.keys(function_.schema.properties), function(prop) {
+                  var value = "notype";
+                  if(function_.schema.properties[prop].type){
+                    var propValue = {};
+                    value = function_.schema.properties[prop].type;
+                    if(value === 'number' || value === 'integer')
+                      propValue = {"expression" : "<" + value + ">", "dynamic" : true};
+                    else
+                      propValue = {"value" : "<" + value + ">", "dynamic" : false};
+                    
+                    targetObject[prop] = propValue;
+                  }
+                });
+                
+                _.each(function_.schema.required, function(prop) {
+                  if(targetObject[prop] && targetObject[prop].value)
+                    targetObject[prop].value += " (REQ)";
+                  if(targetObject[prop] && targetObject[prop].expression)
+                    targetObject[prop].expression += " (REQ)";
+                });
+                
+                newArtefact.argument = {  
+                    "dynamic":false,
+                    "value": JSON.stringify(targetObject),
+                    "expression":null,
+                    "expressionType":null
                 }
-              });
-              
-              _.each(function_.schema.required, function(prop) {
-                if(targetObject[prop] && targetObject[prop].value)
-                  targetObject[prop].value += " (REQ)";
-                if(targetObject[prop] && targetObject[prop].expression)
-                  targetObject[prop].expression += " (REQ)";
-              });
-              
-              newArtefact.argument = {  
-                  "dynamic":false,
-                  "value": JSON.stringify(targetObject),
-                  "expression":null,
-                  "expressionType":null
               }
             }
-          }
-  
-          addArtefactToCurrentNode(newArtefact)
-      	});
+            
+            addArtefactToCurrentNode(newArtefact)
+          });
+        });
       }
       
       $scope.handle.addControl = function(id) {
@@ -591,9 +593,14 @@ angular.module('planEditor',['dataTable','step','artefacts','reportTable','dynam
       
       $scope.handle.addPlan = function(id) {
         $http.get("rest/plans/"+id).then(function(response) {
-          var plan = response.data;         
-          var newArtefact = {"attributes":{"name":plan.attributes.name},"planId":id,"_class":"CallPlan"};
-          addArtefactToCurrentNode(newArtefact)
+          var plan = response.data;
+          $http.get("rest/controller/artefact/types/CallPlan").then(function(response) {
+            var newArtefact = response.data;
+            newArtefact.attributes.name=plan.attributes.name;
+            newArtefact.planId=id;
+            addArtefactToCurrentNode(newArtefact);
+          });
+          
         });
       }
       

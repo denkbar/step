@@ -15,7 +15,6 @@ import step.core.GlobalContextBuilder;
 import step.core.objectenricher.ObjectEnricher;
 import step.core.objectenricher.ObjectFilter;
 import step.core.plans.InMemoryPlanAccessor;
-import step.core.plans.LocalPlanRepository;
 import step.core.plans.Plan;
 import step.core.plans.builder.PlanBuilder;
 import step.planbuilder.BaseArtefacts;
@@ -26,8 +25,7 @@ public class ExportManagerTest {
 	public void testExportArtefactWithChildren() throws IOException, InterruptedException, TimeoutException {
 		GlobalContext c = GlobalContextBuilder.createGlobalContext();
 		Plan plan = PlanBuilder.create().startBlock(BaseArtefacts.sequence()).add(BaseArtefacts.sequence()).endBlock().build();
-		LocalPlanRepository repo = new LocalPlanRepository(c.getPlanAccessor());
-		repo.save(plan);
+		c.getPlanAccessor().save(plan);
 		
 		File testExportFile = new File("testExport.json");
 		try (FileOutputStream outputStream = new FileOutputStream(testExportFile)) {
@@ -64,13 +62,12 @@ public class ExportManagerTest {
 		GlobalContext c = GlobalContextBuilder.createGlobalContext();
 		Sequence rootSequence = BaseArtefacts.sequence();
 		Plan plan = PlanBuilder.create().startBlock(rootSequence).add(BaseArtefacts.sequence()).endBlock().build();
-		LocalPlanRepository repo = new LocalPlanRepository(c.getPlanAccessor());
-		repo.save(plan);
+		c.getPlanAccessor().save(plan);
 		
 		File testExportFile = new File("testExport.json");
 		try (FileOutputStream outputStream = new FileOutputStream(testExportFile)) {
 			ExportManager exportManager = new ExportManager(c.getPlanAccessor());
-			exportManager.exportAllArtefacts(outputStream, dummyObjectFilter());
+			exportManager.exportAllPlans(outputStream, dummyObjectFilter());
 			
 			InMemoryPlanAccessor planAccessor = new InMemoryPlanAccessor();
 			ImportManager importManager = new ImportManager(planAccessor);

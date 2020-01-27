@@ -24,7 +24,7 @@ angular.module('plans',['tables','step','screenConfigurationControllers'])
 })
 
 
-.controller('PlanListCtrl', function($rootScope, $scope, $http, $location, stateStorage, Dialogs, PlanDialogs, AuthService) {
+.controller('PlanListCtrl', function($rootScope, $scope, $http, $location, $uibModal, stateStorage, ExportService, Dialogs, PlanDialogs, AuthService) {
     stateStorage.push($scope, 'plans', {});	
     $scope.authService = AuthService;
     
@@ -75,7 +75,7 @@ angular.module('plans',['tables','step','screenConfigurationControllers'])
     $scope.importPlans = function() {
       var modalInstance = $uibModal.open({
         backdrop: 'static',
-        templateUrl: 'partials/importPlansDialog.html',
+        templateUrl: 'partials/plans/importPlansDialog.html',
         controller: 'importPlansModalCtrl',
         resolve: {}
       });
@@ -85,24 +85,13 @@ angular.module('plans',['tables','step','screenConfigurationControllers'])
       });
     }
     
-    $scope.exportArtefacts = function() {
-      ExportService.get("rest/export/artefacts")
+    $scope.exportPlans = function() {
+      ExportService.get("rest/export/plans")
     }
     
   })
   
 .factory('PlanDialogs', function ($uibModal, $http, Dialogs) {
-  
-  function openModal(id) {
-    var modalInstance = $uibModal.open({
-      backdrop: 'static',
-        templateUrl: 'partials/plans/createPlanDialog.html',
-        controller: 'createPlanCtrl',
-        resolve: {}
-      });
-
-      return modalInstance.result;
-  }
   
   var dialogs = {};
   
@@ -183,7 +172,7 @@ angular.module('plans',['tables','step','screenConfigurationControllers'])
 
 .controller('selectPlanModalCtrl', function ($scope, $uibModalInstance, $http) {
   $scope.selectPlan = function(id) {
-    $http.get('rest/plans'+id).then(function(response) {
+    $http.get('rest/plans/'+id).then(function(response) {
       var plan = response.data;
       $uibModalInstance.close(plan);
     }) 

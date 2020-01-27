@@ -16,9 +16,7 @@ import step.core.artefacts.reports.ReportNode;
 import step.core.dynamicbeans.DynamicValue;
 import step.core.execution.ContextBuilder;
 import step.core.execution.ExecutionContext;
-import step.core.plans.LocalPlanRepository;
 import step.core.plans.Plan;
-import step.core.plans.PlanRepository;
 import step.core.plans.builder.PlanBuilder;
 import step.core.reports.ErrorType;
 import step.functions.handler.AbstractFunctionHandler;
@@ -40,8 +38,7 @@ public class ArtefactFunctionHandlerTest {
 		r.setOutput(new DynamicValue<String>("{\"Result\":{\"dynamic\":true,\"expression\":\"input.Input1\"}}"));
 		
 		Plan compositePlan = PlanBuilder.create().startBlock(BaseArtefacts.sequence()).add(r).endBlock().build();
-		PlanRepository planRepository = new LocalPlanRepository(context.getPlanAccessor());
-		planRepository.save(compositePlan);
+		context.getPlanAccessor().save(compositePlan);
 		
 		ReportNode parentNode = new ReportNode();
 		context.getReportNodeAccessor().save(parentNode);
@@ -82,8 +79,7 @@ public class ArtefactFunctionHandlerTest {
 		script.setScript("output.setError('MyError'");
 		
 		Plan compositePlan = PlanBuilder.create().startBlock(BaseArtefacts.sequence()).add(script).endBlock().build();
-		PlanRepository planRepository = new LocalPlanRepository(context.getPlanAccessor());
-		planRepository.save(compositePlan);
+		context.getPlanAccessor().save(compositePlan);
 		
 		ReportNode parentNode = new ReportNode();
 		context.getReportNodeAccessor().save(parentNode);

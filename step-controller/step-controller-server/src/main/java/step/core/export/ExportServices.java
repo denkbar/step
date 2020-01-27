@@ -46,7 +46,7 @@ public class ExportServices extends AbstractServices {
 	}
 
 	@GET
-	@Path("/artefact/{id}")
+	@Path("/plan/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Secured(right="plan-read")
@@ -64,7 +64,7 @@ public class ExportServices extends AbstractServices {
 	}
 	
 	@GET
-	@Path("/artefacts")
+	@Path("/plans")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Secured(right="plan-read")
@@ -74,7 +74,7 @@ public class ExportServices extends AbstractServices {
 			@Override
 			public Resource runExport() throws FileNotFoundException, IOException {
 				ResourceRevisionContainer resourceContainer = getResourceManager().createResourceContainer(ResourceManager.RESOURCE_TYPE_TEMP, "artefact_export.json");
-				exportManager.exportAllArtefacts(resourceContainer.getOutputStream(), objectHookRegistry.getObjectFilter(session));
+				exportManager.exportAllPlans(resourceContainer.getOutputStream(), objectHookRegistry.getObjectFilter(session));
 				resourceContainer.save(null);
 				return resourceContainer.getResource();
 			}
