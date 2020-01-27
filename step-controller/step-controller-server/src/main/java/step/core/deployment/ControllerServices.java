@@ -18,7 +18,6 @@
  *******************************************************************************/
 package step.core.deployment;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -195,14 +193,6 @@ public class ControllerServices extends AbstractServices {
 		return executionsByArtefactURL;
 	}
 	
-//	@POST
-//	@Path("/execution/{id}/report")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public ReportExport reportExecution(@PathParam("id") String executionID, RepositoryObjectReference report) {
-//		return getContext().getRepositoryObjectManager().exportTestExecutionReport(report, executionID);
-//	}
-	
 	@GET
 	@Path("/execution/{id}/statusdistribution")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -281,47 +271,14 @@ public class ControllerServices extends AbstractServices {
 		return getContext().getReportAccessor().get(new ObjectId(reportNodeId));
 	}
 	
-//	@GET
-//	@Path("/reportnode/{id}/path")
-//	@Secured(right="report-read")
-//	public List<ReportNodeAndArtefact> getReportNodePath(@PathParam("id") String reportNodeId) {
-//		List<ReportNodeAndArtefact> result = new ArrayList<>();
-//		ArtefactAccessor artefactAccessor = getContext().getArtefactAccessor();
-//		List<ReportNode> path = getContext().getReportAccessor().getReportNodePath(new ObjectId(reportNodeId));
-//		path.forEach((node) -> result.add(new ReportNodeAndArtefact(node, node.getArtefactID()!=null?artefactAccessor.get(node.getArtefactID()):null)));
-//		return result;
-//	}
-	
-	class ReportNodeAndArtefact {
-		
-		ReportNode reportNode;
-		
-		AbstractArtefact artefact;
-
-		public ReportNodeAndArtefact() {
-			super();
-		}
-
-		public ReportNodeAndArtefact(ReportNode reportNode,	AbstractArtefact artefact) {
-			this.reportNode = reportNode;
-			this.artefact = artefact;
-		}
-
-		public ReportNode getReportNode() {
-			return reportNode;
-		}
-
-		public void setReportNode(ReportNode reportNode) {
-			this.reportNode = reportNode;
-		}
-
-		public AbstractArtefact getArtefact() {
-			return artefact;
-		}
-
-		public void setArtefact(AbstractArtefact artefact) {
-			this.artefact = artefact;
-		}
+	@GET
+	@Path("/reportnode/{id}/path")
+	@Secured(right="report-read")
+	public List<ReportNode> getReportNodePath(@PathParam("id") String reportNodeId) {
+		List<ReportNode> result = new ArrayList<>();
+		List<ReportNode> path = getContext().getReportAccessor().getReportNodePath(new ObjectId(reportNodeId));
+		path.forEach((node) -> result.add(node));
+		return result;
 	}
 	
 	@GET
@@ -352,7 +309,6 @@ public class ControllerServices extends AbstractServices {
 		return result;
 	}
 	
-	
 	@POST
 	@Path("/repository/artefact/info")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -376,24 +332,6 @@ public class ControllerServices extends AbstractServices {
 	}
 	
 //	@GET
-//	@Path("/artefact/{id}")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Secured(right="plan-read")
-//	public AbstractArtefact getArtefact(@PathParam("id") String id) {
-//		return getContext().getArtefactAccessor().get(new ObjectId(id));
-//	}
-//	
-//	@POST
-//	@Path("/artefact/search")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Secured(right="plan-read")
-//	public AbstractArtefact searchArtefactByAttributes(Map<String, String> attributes) {
-//		return getContext().getArtefactAccessor().findByAttributes(attributes);
-//	}
-	
-//	@GET
 //	@Path("/artefact/lookupPlan/{id}")
 //	@Consumes(MediaType.APPLICATION_JSON)
 //	@Produces(MediaType.APPLICATION_JSON)
@@ -414,50 +352,6 @@ public class ControllerServices extends AbstractServices {
 //	}
 
 	
-//	@POST
-//	@Path("/artefact/{id}/attributes")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Secured(right="plan-write")
-//	public AbstractArtefact saveArtefactAttributes(Map<String, String> attributes, @PathParam("id") String id) {
-//		ArtefactAccessor accessor = getContext().getArtefactAccessor();
-//		AbstractArtefact artefact = accessor.get(id);
-//		artefact.setAttributes(attributes);
-//		return accessor.save(artefact);
-//	}
-//	
-//	@POST
-//	@Path("/artefact")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Secured(right="plan-write")
-//	public AbstractArtefact saveArtefact(AbstractArtefact artefact) {
-//		return getContext().getArtefactAccessor().save(artefact);
-//	}
-//	
-//	@POST
-//	@Path("/artefacts")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Secured(right="plan-write")
-//	public void saveArtefact(List<AbstractArtefact> artefact) {
-//		getContext().getArtefactAccessor().save(artefact);
-//	}
-	
-	
-//	@GET
-//	@Path("/artefact/{id}/descendants")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Secured(right="plan-read")
-//	public ArtefactTree getArtefactDescendants(@PathParam("id") String id) {
-//		ArtefactAccessor a = getContext().getArtefactAccessor();
-//		AbstractArtefact root = a.get(id);
-//		ArtefactTree rootNode = new ArtefactTree(root);
-//		getChildrenRecursive(a, rootNode);
-//		return rootNode;
-//	}
-	
 	@GET
 	@Path("/artefact/types")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -473,173 +367,6 @@ public class ControllerServices extends AbstractServices {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Secured(right="plan-read")
 	public AbstractArtefact getArtefactType(@PathParam("id") String type) throws Exception {
-		Class<? extends AbstractArtefact> clazz = ArtefactRegistry.getInstance().getArtefactType(type);		
-		AbstractArtefact sample = clazz.newInstance();
-		for(Method m:clazz.getMethods()) {
-			if(m.getAnnotation(PostConstruct.class)!=null) {
-				m.invoke(sample);
-			}
-		}
-		
-		return sample;
-	}
-	
-	public class ArtefactTree {
-		
-		AbstractArtefact artefact;
-		
-		List<ArtefactTree> children;
-
-		public ArtefactTree(AbstractArtefact artefact) {
-			super();
-			this.artefact = artefact;
-		}
-
-		public AbstractArtefact getArtefact() {
-			return artefact;
-		}
-
-		public List<ArtefactTree> getChildren() {
-			return children;
-		}
-
-		public void setChildren(List<ArtefactTree> children) {
-			this.children = children;
-		}
-	}
-	
-//	private void getChildrenRecursive(ArtefactAccessor a, ArtefactTree current) {
-//		AbstractArtefact parent = current.getArtefact();
-//		if(parent.getChildrenIDs()!=null) {
-//			List<ArtefactTree> childrenNodes = new ArrayList<>();
-//			for(ObjectId childId:parent.getChildrenIDs()) {
-//				AbstractArtefact child = a.get(childId);
-//				ArtefactTree childNode = new ArtefactTree(child);
-//				childrenNodes.add(childNode);
-//				getChildrenRecursive(a, childNode);
-//			}
-//			current.setChildren(childrenNodes);
-//		}
-//	}
-//	
-//	@POST
-//	@Path("/artefact/{id}/children")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Secured(right="plan-write")
-//	public AbstractArtefact addChild(@PathParam("id") String id, AbstractArtefact child) {
-//		ArtefactAccessor a = getContext().getArtefactAccessor();
-//		
-//		child = a.save(child);
-//		
-//		AbstractArtefact artefact = a.get(id);
-//		artefact.addChild(child.getId());
-//		
-//		a.save(artefact);
-//		
-//		return child;
-//	}
-//	
-//	@DELETE
-//	@Path("/artefact/{id}/children/{childid}")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Secured(right="plan-write")
-//	public void removeChild(@PathParam("id") String parentid, @PathParam("childid") String childid) {
-//		ArtefactAccessor a = getContext().getArtefactAccessor();
-//		AbstractArtefact artefact = a.get(parentid);
-//		artefact.removeChild(new ObjectId(childid));
-//		a.save(artefact);
-//	}
-//	
-//	@POST
-//	@Path("/artefact/{id}/children/{childid}/move")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Secured(right="plan-write")
-//	public void moveChildUp(@PathParam("id") String parentid, @PathParam("childid") String childid, int offset) {
-//		ArtefactAccessor a = getContext().getArtefactAccessor();
-//		AbstractArtefact artefact = a.get(parentid);
-//		
-//		ObjectId child = new ObjectId(childid);
-//		int pos = artefact.indexOf(child);
-//		int newPos = pos+offset;
-//		if(newPos>=0&&newPos<artefact.getChildrenIDs().size()) {
-//			artefact.removeChild(child);
-//			artefact.add(newPos, child);		
-//		}
-//		a.save(artefact);
-//	}
-//	
-//	@POST
-//	@Path("/artefact/{id}/move")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Secured(right="plan-write")
-//	public void moveArtefact(@PathParam("id") String id, @QueryParam("from") String originParentId, 
-//			@QueryParam("to") String targetParentId, @QueryParam("pos") int newPosition) {
-//		ArtefactAccessor a = getContext().getArtefactAccessor();
-//		AbstractArtefact origin = a.get(originParentId);
-//		origin.removeChild(new ObjectId(id));
-//		a.save(origin);
-//		
-//		AbstractArtefact target = a.get(targetParentId);
-//		target.add(newPosition, new ObjectId(id));		
-//		a.save(target);
-//	}
-	
-//	@POST
-//    @Path("/artefacts/move")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Secured(right="plan-write")
-//    public void moveArtefacts(List<MoveArtefactData> nodes) {
-//	    ArtefactAccessor a = getContext().getArtefactAccessor();
-//	    for (MoveArtefactData node : nodes) {
-//            AbstractArtefact origin = a.get(node.getOldParent());
-//            origin.removeChild(new ObjectId(node.getId()));
-//            a.save(origin);
-//            
-//            AbstractArtefact target = a.get(node.getParent());
-//            target.add(node.getPosition(), new ObjectId(node.getId()));      
-//            a.save(target);
-//	    }
-//    }
-	
-	@POST
-	@Path("/artefact/{id}/rename")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Secured(right="plan-write")
-	public ObjectId renameArtefact(@PathParam("id") String id, 
-			@QueryParam("name") String name) {
-		throw new RuntimeException();
-	}
-	
-	@POST
-	@Path("/artefact/{id}/copy")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Secured(right="plan-write")
-	public ObjectId copyArtefact(@PathParam("id") String id, 
-			@QueryParam("to") String targetParentId, @QueryParam("pos") int newPosition, @QueryParam("name") String name) {
-		throw new RuntimeException();
-	}
-	
-	@POST
-	@Path("/artefact/{id}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Secured(right="plan-write")
-	public void updateArtefact(AbstractArtefact artefact) {
-		throw new RuntimeException();
-	}
-	
-	@DELETE
-	@Path("/artefact/{id}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Secured(right="plan-delete")
-	public void deleteArtefact(@PathParam("id") String id) {
-		throw new RuntimeException();
+		return ArtefactRegistry.getInstance().getArtefactTypeInstance(type);
 	}
 }

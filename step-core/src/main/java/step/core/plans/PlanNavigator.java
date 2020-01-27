@@ -16,7 +16,7 @@ public class PlanNavigator {
 	}
 	
 	protected AbstractArtefact findArtefactByIdRecursive(String id, AbstractArtefact a) {
-		if(a.getId().equals(id)) {
+		if(a.getId().toString().equals(id)) {
 			return a;
 		} else {
 			for (AbstractArtefact child : a.getChildren()) {

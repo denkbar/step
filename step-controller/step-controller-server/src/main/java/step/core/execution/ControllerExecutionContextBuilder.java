@@ -1,5 +1,7 @@
 package step.core.execution;
 
+import org.bson.types.ObjectId;
+
 import step.core.GlobalContext;
 import step.core.execution.model.ExecutionMode;
 import step.core.execution.model.ExecutionParameters;
@@ -15,6 +17,10 @@ public class ControllerExecutionContextBuilder {
 		this.globalContext = globalContext;
 	}
 
+	public ExecutionContext createExecutionContext() {
+		return createExecutionContext(new ObjectId().toString());
+	}
+	
 	public ExecutionContext createExecutionContext(String executionId) {
 		return createExecutionContext(executionId, new ExecutionParameters("dummy", null, ExecutionMode.RUN));
 	}

@@ -138,7 +138,7 @@ public class InteractiveServices extends AbstractServices {
 	@Secured(right="interactive")
 	public String start() throws AgentCommunicationException {
 		InteractiveSession session = new InteractiveSession();
-		ExecutionContext  executionContext = executionContextBuilder.createExecutionContext(session.c.getExecutionId());
+		ExecutionContext  executionContext = executionContextBuilder.createExecutionContext();
 		
 		// Enrich the ExecutionParameters with the current context attributes as done by the TenantContextFilter when starting a normal execution
 		objectHookRegistry.getObjectEnricher(getSession()).accept(executionContext.getExecutionParameters());
@@ -228,19 +228,19 @@ public class InteractiveServices extends AbstractServices {
 	
 	public static class FunctionTestingSession {
 		
-		private String rootArtefactId;
+		private String planId;
 		private String callFunctionId;
 		
 		public FunctionTestingSession() {
 			super();
 		}
 
-		public String getRootArtefactId() {
-			return rootArtefactId;
+		public String getPlanId() {
+			return planId;
 		}
 
-		public void setRootArtefactId(String rootArtefactId) {
-			this.rootArtefactId = rootArtefactId;
+		public void setPlanId(String planId) {
+			this.planId = planId;
 		}
 
 		public String getCallFunctionId() {
@@ -279,7 +279,7 @@ public class InteractiveServices extends AbstractServices {
 		LocalPlanRepository repo = new LocalPlanRepository(getContext().getPlanAccessor());
 		repo.save(plan);
 		FunctionTestingSession result = new FunctionTestingSession();
-		result.setRootArtefactId(plan.getRoot().getId().toString());
+		result.setPlanId(plan.getId().toString());
 		result.setCallFunctionId(callFunction.getId().toString());
 		return result;
 	}

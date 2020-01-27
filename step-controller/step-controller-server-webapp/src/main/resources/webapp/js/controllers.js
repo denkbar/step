@@ -145,7 +145,7 @@ tecAdminControllers.directive('executionCommands', ['$rootScope','$http','$locat
 				var executionParams = {userID:$rootScope.context.userID};
 				executionParams.description = $scope.description;
 				executionParams.mode = simulate?'SIMULATION':'RUN';
-				executionParams.artefact = $scope.artefact();
+				executionParams.repositoryObject = $scope.artefact();
 				executionParams.exports = [];
 				executionParams.isolatedExecution = $scope.isolateExecution;
 				var includedTestcases = $scope.includedTestcases();
