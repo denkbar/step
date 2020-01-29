@@ -16,6 +16,8 @@ public class Plan extends AbstractOrganizableObject {
 	
 	protected Collection<Function> functions;
 	
+	protected Collection<Plan> subPlans;
+	
 	public Plan(AbstractArtefact root) {
 		super();
 		this.root = root;
@@ -39,5 +41,13 @@ public class Plan extends AbstractOrganizableObject {
 
 	public void setFunctions(Collection<Function> functions) {
 		this.functions = functions;
+	}
+
+	public Collection<Plan> getSubPlans() {
+		return subPlans;
+	}
+
+	public void setSubPlans(Collection<Plan> subPlans) {
+		this.subPlans = subPlans;
 	}
 }
