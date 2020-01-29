@@ -134,7 +134,7 @@ angular.module('functionsControllers',['dataTable','step'])
               interactive : true,
               selectedNode : result.callFunctionId
           }
-          $location.path('/root/planeditor/' + result.planId);
+          $location.path('/root/plans/editor/' + result.planId);
         });
       }
       

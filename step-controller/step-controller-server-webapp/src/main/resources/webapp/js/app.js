@@ -447,7 +447,7 @@ angular.module('step',['ngStorage','ngCookies','angularResizable'])
 		if(serviceContext.conf && serviceContext.conf.defaultUrl) {
 			$location.path(serviceContext.conf.defaultUrl)
 		} else {
-			$location.path('/root/artefacts')
+			$location.path('/root/plans/list')
 		}
 	}
 

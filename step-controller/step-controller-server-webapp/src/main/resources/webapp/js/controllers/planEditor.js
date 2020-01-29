@@ -24,7 +24,7 @@ angular.module('planEditor',['dataTable','step','artefacts','reportTable','dynam
 
 .controller('PlanEditorCtrl', function($scope, $compile, $http, stateStorage, $interval, $uibModal, $location,Dialogs,  AuthService, reportTableFactory, executionServices, ExportService) {
   $scope.authService = AuthService;
-  stateStorage.push($scope, 'planeditor', {});
+  stateStorage.push($scope, 'editor', {});
       
   $scope.$watch('$state',function() {
     if($scope.$state!=null) {
@@ -57,7 +57,7 @@ angular.module('planEditor',['dataTable','step','artefacts','reportTable','dynam
         var clonePlan = response.data;
         clonePlan.attributes.name = value;
         savePlan(clonePlan).then(function() {
-          $location.path('/root/planeditor/' + clonePlan.id);
+          $location.path('/root/plans/editor/' + clonePlan.id);
         });
       })
     });

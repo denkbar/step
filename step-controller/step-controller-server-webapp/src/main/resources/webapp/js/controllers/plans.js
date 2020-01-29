@@ -18,11 +18,21 @@
  *******************************************************************************/
 angular.module('plans',['tables','step','screenConfigurationControllers'])
 
-.run(function(ViewRegistry, EntityRegistry) {  
-  ViewRegistry.registerView('plans','partials/plans/planList.html');
+.run(function(ViewRegistry, EntityRegistry) {
+  ViewRegistry.registerView('plans','partials/plans/plans.html');
   EntityRegistry.registerEntity('Plan', 'artefact', 'artefacts', 'rest/controller/artefact/', 'rest/controller/artefact', 'datatable', '/partials/selection/selectDatatableEntity.html');
 })
 
+.controller('PlansCtrl', function($rootScope, $scope, stateStorage) {
+  stateStorage.push($scope, 'plans', {}); 
+
+  $scope.$watch('$state',function() {
+    if($scope.$state!=null) {
+      $scope.selectView = $scope.$state
+    }
+  });
+
+})
 
 .controller('PlanListCtrl', function($rootScope, $scope, $http, $location, $uibModal, stateStorage, ExportService, Dialogs, PlanDialogs, AuthService) {
     stateStorage.push($scope, 'plans', {});	
@@ -41,7 +51,7 @@ angular.module('plans',['tables','step','screenConfigurationControllers'])
     }
 
     $scope.editPlan = function(id) {
-      $location.path('/root/planeditor/' + id);
+      $location.path('/root/plans/editor/' + id);
     }
     
     $scope.executePlan = function(id) {
@@ -141,7 +151,7 @@ angular.module('plans',['tables','step','screenConfigurationControllers'])
       $http.post("rest/plans", createdPlan).then(function(response) {
         $uibModalInstance.close(response.data);
         if(editAfterSave) {
-          $location.path('/root/planeditor/' + createdPlan.id);
+          $location.path('/root/plans/editor/' + createdPlan.id);
         }
       })
     })

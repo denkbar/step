@@ -125,7 +125,7 @@ angular.module('artefacts',['step'])
 })
 .controller('CallPlanCtrl' , function($scope,$location,$http, PlanDialogs) {  
   $scope.gotoPlan = function() {
-    $location.path('/root/planeditor/' + $scope.artefact.planId);
+    $location.path('/root/plans/editor/' + $scope.artefact.planId);
   }
   
   $scope.$watch('artefact.planId', function(planId) {
