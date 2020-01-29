@@ -24,7 +24,7 @@
 			<st-column name="attributes.name">
 				<header>Name</header>
 				<second-header><inputdropdown action="search" initial-value="initialValue"></inputdropdown></second-header>
-				<cell>{{row.attributes.name}}</cell>
+				<cell><a href="#/root/plans/editor/{{row._id.$oid}}">{{row.attributes.name}}</a></cell>
 			</st-column>
 			<st-column name="root._class">
 				<header>Type</header>

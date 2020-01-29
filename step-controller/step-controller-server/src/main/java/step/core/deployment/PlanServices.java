@@ -16,10 +16,16 @@ import javax.ws.rs.core.MediaType;
 
 import org.bson.types.ObjectId;
 
+import step.artefacts.CallPlan;
+import step.artefacts.handlers.PlanLocator;
+import step.artefacts.handlers.SelectorHelper;
 import step.core.artefacts.AbstractArtefact;
 import step.core.artefacts.ArtefactRegistry;
+import step.core.dynamicbeans.DynamicJsonObjectResolver;
+import step.core.dynamicbeans.DynamicJsonValueResolver;
 import step.core.plans.Plan;
 import step.core.plans.PlanAccessor;
+import step.core.plans.PlanNavigator;
 import step.core.plans.builder.PlanBuilder;
 
 @Singleton
@@ -83,6 +89,20 @@ protected PlanAccessor planAccessor;
 	@Secured(right="plan-write")
 	public void delete(@PathParam("id") String id) {
 		planAccessor.remove(new ObjectId(id));
+	}
+	
+	@GET
+	@Path("/{id}/artefacts/{artefactid}/lookup/plan")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured(right="plan-read")
+	public Plan lookupPlan(@PathParam("id") String id, @PathParam("artefactid") String artefactId) {
+		Plan plan = get(id);
+		PlanNavigator planNavigator = new PlanNavigator(plan);
+		CallPlan artefact = (CallPlan) planNavigator.findArtefactById(artefactId);
+		DynamicJsonObjectResolver dynamicJsonObjectResolver = new DynamicJsonObjectResolver(new DynamicJsonValueResolver(getContext().getExpressionHandler()));
+		SelectorHelper selectorHelper = new SelectorHelper(dynamicJsonObjectResolver);
+		PlanLocator planLocator = new PlanLocator(null,getContext().getPlanAccessor(),selectorHelper);
+		return planLocator.selectPlan(artefact);
 	}
 	
 	@POST

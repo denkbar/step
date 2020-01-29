@@ -613,10 +613,11 @@ angular.module('planEditor',['dataTable','step','artefacts','reportTable','dynam
       $scope.openSelectedArtefact = function() {
         var selectedArtefact = tree.get_selected(true)[0];
         if (selectedArtefact.original.planId) {
-          $http({url:"rest/controller/artefact/lookupPlan/"+selectedArtefact.original.planId,method:"GET"}).then(function(response) {
+          $http.get('rest/plans/'+$scope.plan.id+'/artefacts/'+selectedArtefact.id+'/lookup/plan').then(function(response) {
             if (response.data) {
-              if (response.data.id) {
-                openArtefact(response.data.id);
+              var planId = response.data.id
+              if (planId) {
+                openPlan(planId);
               } else {
                 Dialogs.showErrorMsg("No editor configured for this plan type");
               }
@@ -625,10 +626,12 @@ angular.module('planEditor',['dataTable','step','artefacts','reportTable','dynam
             }
           });
         } else if (selectedArtefact.original.callFunctionId) {
-          $http({url:"rest/functions/lookupByArtefact/"+selectedArtefact.original.callFunctionId,method:"GET"}).then(function(response) {
+          var artefact = getSelectedArtefact();
+          $http.post("rest/functions/lookup",artefact).then(function(response) {
             if (response.data) {
-              if (response.data.artefactId) {
-                openArtefact(response.data.artefactId);
+              var planId = response.data.planId;
+              if (planId) {
+                openPlan(planId);
               } else {
                 Dialogs.showErrorMsg("No editor configured for this function type");
               }
@@ -645,9 +648,9 @@ angular.module('planEditor',['dataTable','step','artefacts','reportTable','dynam
         return selectedArtefact;
       }
       
-      openArtefact = function(artefactId) {
+      openPlan = function(planId) {
         $timeout(function() {
-          $location.path('/root/artefacteditor/' + artefactId);
+          $location.path('/root/plans/editor/' + planId);
         });
       }
       
