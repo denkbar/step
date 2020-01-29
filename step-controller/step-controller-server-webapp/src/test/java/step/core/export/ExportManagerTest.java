@@ -30,14 +30,15 @@ public class ExportManagerTest {
 		File testExportFile = new File("testExport.json");
 		try (FileOutputStream outputStream = new FileOutputStream(testExportFile)) {
 			ExportManager exportManager = new ExportManager(c.getPlanAccessor());
-			exportManager.exportPlan(plan.getRoot().getId().toString(), outputStream);
+			exportManager.exportPlan(plan.getId().toString(), outputStream);
 			
 			InMemoryPlanAccessor planAccessor = new InMemoryPlanAccessor();
 			ImportManager importManager = new ImportManager(planAccessor);
 			importManager.importPlans(testExportFile, dummyObjectEnricher());
 			
 			Plan actualPlan = planAccessor.get(plan.getId());
-			Assert.assertEquals(plan, actualPlan);
+			Assert.assertEquals(plan.getId(), actualPlan.getId());
+			Assert.assertEquals(plan.getRoot(), actualPlan.getRoot());
 		} finally {
 			testExportFile.delete();
 		}
@@ -74,7 +75,8 @@ public class ExportManagerTest {
 			importManager.importPlans(testExportFile, dummyObjectEnricher());
 			
 			Plan actualPlan = planAccessor.get(plan.getId());
-			Assert.assertEquals(plan, actualPlan);
+			Assert.assertEquals(plan.getId(), actualPlan.getId());
+			Assert.assertEquals(plan.getRoot(), actualPlan.getRoot());
 		} finally {
 			testExportFile.delete();
 		}
